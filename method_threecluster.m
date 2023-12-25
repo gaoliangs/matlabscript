@@ -21,7 +21,7 @@ N2= sym(zeros(3,1));
 
 for n = 38:105
     n
-
+    %读取公式
     eval(['blocks_c',num2str(n)])
     eval(['newlambda_c',num2str(n)]);
     l_c=l;
@@ -57,24 +57,25 @@ for n = 38:105
     
     tic
     for i = 1:1000
-
+        %判断F3(:,1)是否仍是最大
         if F3x(i,1) > max(F3x(i,2:end))
 
             dFc1=-1;dFc2=-1;dFc3=-1;
             dFc1_x=-1;dFc2_x=-1;dFc3_x=-1;
             
             kl = k(i,:);
-    
+            %读取在二维中对应的位置坐标
             a = three2two(n,1);
             b = three2two(n,2);
             c = three2two(n,3);
             d = three2two(n,4);
         
-            %compare two cluster
+            %比较两条边时的F
             F_a = F2(i,a);
             F_b = F2(i,b);
             F_c = F2(i,c);
-    
+
+            %判断是否需要添加第三条边
             if F_a >= max(F_b,F_c)
                 t1_v = TT1(i,a);c1_v=CC1(i,a);
                 t2_v = TT2(i,a);c2_v=CC2(i,a);
@@ -107,7 +108,7 @@ for n = 38:105
             end
     
     
-    
+            %不需要添加第三条边，直接保存二维的解
             if dF3a <=0 &&dF3b<=0 || (dF3a*dF3b<0 && 10^10*max(dF3a,dF3b)+min(dF3a,dF3b)<0 )
                 t3_v=0;c3_v=-1;
                 bestT=[t1_v,t2_v,t3_v,c1_v,c2_v,c3_v];
@@ -121,19 +122,25 @@ for n = 38:105
                 bestT=[t1_v,t2_v,t3_v,c1_v,c2_v,c3_v];
                 F_t= F_c;
             else
+            %需要添加第三条边
+                %固定三个参数c=0或inf（8个顶点）
                 corner_8
                 best_c8 = bestT;F_c8=F;
                 checkderivative_c
+                %至少有一个c是finite
                 if dFc1>0 || dFc1_x>0 ||dFc2>0 ||dFc2_x>0||dFc3>0||dFc3_x>0
+                    %固定两个参数c（12条边）
                     edge_8
                     checkderivative_c
                     best_e8 = bestT;F_e8=F;
                 end
                 if dFc1>0 || dFc1_x>0 ||dFc2>0 ||dFc2_x>0||dFc3>0||dFc3_x>0
+                    %固定一个参数c（6个面）
                     face_8
                     checkderivative_c
                     best_face=bestT;F_face =F;
                 end
+                %三个c都是finite
                 if dFc1>0 || dFc2>0 ||dFc3>0
                     sst1 = bestT(1);sst2=bestT(2);sst3=bestT(3);ssc1=bestT(4);ssc2=bestT(5);ssc3=bestT(6);
                     solve_t123_c123
@@ -152,9 +159,8 @@ for n = 38:105
                 end
                 F_t = F;
             end
+
             
-        
-           
             if dFc1>=0||dFc2>=0||dFc1_x>=0||dFc2_x>=0||dFc3>0||dFc3_x>0
                 i,'dFc'
                 F
@@ -166,6 +172,7 @@ for n = 38:105
                 dFc3_x
             end
         else
+        %F3(:,1)不是最大时，无需计算
             bestT = [-3,-3,-3,-3,-3,-3];
             F_t = -3;
         end
