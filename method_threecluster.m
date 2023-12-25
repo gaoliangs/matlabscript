@@ -1,6 +1,8 @@
 tic
 syms t1 t2 t3 c1 c2 c3 x y
+%求方程组的数值解t1,t2,t3,c1,c2,c3>=0 
 
+%1000组数据
 simulation1000k_1
 
 
@@ -19,7 +21,7 @@ N2= sym(zeros(3,1));
 %F3x = zeros(1000,105);
 
 
-for n = 38:105
+for n = 1:105
     n
     %读取公式
     eval(['blocks_c',num2str(n)])
